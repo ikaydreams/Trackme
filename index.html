@@ -84,6 +84,50 @@
             L.latLng(11.2, 1.2)  // Northeast corner (lat, lng)
         );
 
+        // Simulate Bus Movement (for testing)
+    function simulateBusMovement() {
+    setInterval(() => {
+        // Generate random coordinates within Ghana's bounds
+        const lat = 7.9465 + (Math.random() - 0.5) * 0.1; // Random latitude
+        const lng = -1.0232 + (Math.random() - 0.5) * 0.1; // Random longitude
+        const speed = Math.floor(Math.random() * 60); // Random speed (0-60 km/h)
+
+        // Update the red dot position
+        redDot.setLatLng([lat, lng]);
+        map.panTo([lat, lng]);
+
+        // Broadcast simulated data to WebSocket (if connected)
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                type: 'POSITION_UPDATE',
+                data: { position: [lat, lng], speed }
+            }));
+        }
+
+        // Update ETA and Speed
+        document.getElementById('eta').textContent = `${calculateETA(lat, lng)} minutes`;
+        document.getElementById('speed').textContent = speed;
+    }, 5000); // Update every 5 seconds
+}
+
+// Start simulation (for testing)
+simulateBusMovement();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
         // Initialize Map
         const map = L.map('map', {
             maxBounds: ghanaBounds, // Restrict map to Ghana
